@@ -1,0 +1,62 @@
+<?php
+namespace WYSIWYGWikiLingo\Test\SyntaxGenerator;
+
+use WikiLingoWYSIWYG;
+use WikiLingo\Test\Expression as WikiLingoTestExpression;
+use WYSIWYGWikiLingo\Test\Base;
+
+class InnerTabs extends Base
+{
+	public function __construct(WikiLingoWYSIWYG\Parser &$parser)
+	{
+		$this->source = '<ul role="tablist" class="helper ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" data-helper="true" ondragstart="return false;" contenteditable="false">' .
+                '<li aria-selected="true" aria-labelledby="ui-id-1" aria-controls="tab1" tabindex="0" role="tab" class="helper ui-state-default ui-corner-top ui-tabs-active ui-state-active" data-helper="true" ondragstart="return false;" contenteditable="false">' .
+                    '<a id="ui-id-1" tabindex="-1" role="presentation" class="helper ui-tabs-anchor" href="#tab1" data-helper="true" ondragstart="return false;" contenteditable="false">More about wikiLingo</a>' .
+                '</li>' .
+                '<li aria-selected="false" aria-labelledby="ui-id-2" aria-controls="tab2" tabindex="-1" role="tab" class="helper ui-state-default ui-corner-top" data-helper="true" ondragstart="return false;" contenteditable="false">' .
+                    '<a id="ui-id-2" tabindex="-1" role="presentation" class="helper ui-tabs-anchor" href="#tab2" data-helper="true" ondragstart="return false;" contenteditable="false">For a laugh</a>'.
+                '</li>'.
+                '<li aria-selected="false" aria-labelledby="ui-id-3" aria-controls="tab3" tabindex="-1" role="tab" class="helper ui-state-default ui-corner-top" data-helper="true" ondragstart="return false;" contenteditable="false">'.
+                    '<a id="ui-id-3" tabindex="-1" role="presentation" class="helper ui-tabs-anchor" href="#tab3" data-helper="true" ondragstart="return false;" contenteditable="false">Unsafe code</a>'.
+                '</li>'.
+            '</ul>'.
+            '<br class="hidden element" data-type="WikiLingo\\Expression\\Line" data-element="true">'.
+            '<span class="whitespace element" data-type="WikiLingo\\Expression\\WhiteSpace" data-element="true"> </span>'.
+            '<div style="display: block;" aria-hidden="false" aria-expanded="true" role="tabpanel" aria-labelledby="ui-id-1" class="tab element ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab1" data-type="WikiLingo\\Expression\\Plugin" data-element="true" data-plugin-type="tab" data-draggable="false" data-plugin-parameters="%7B%22title%22%3A%22More+about+wikiLingo%22%7D" data-in-line="false">'.
+                '<br class="element" data-type="WikiLingo\\Expression\\Line" data-element="true">'.
+                '<span class="whitespace element" data-type="WikiLingo\\Expression\\WhiteSpace" data-element="true"> </span>Video coming soon...'.
+                '<br class="element" data-type="WikiLingo\\Expression\\Line" data-element="true">'.
+                '<span class="whitespace element" data-type="WikiLingo\\Expression\\WhiteSpace" data-element="true"> </span>'.
+                '<embed class="flash element" id="flash1" style="height:480px;width:640px;" src="img/emblem-multimedia.png" title="" data-type="WikiLingo\\Expression\\Plugin" data-element="true" data-plugin-type="flash" data-draggable="true" data-plugin-parameters="" data-in-line="true" contenteditable="false" height="480px" width="640px">'.
+            '<br class="element" data-type="WikiLingo\\Expression\\Line" data-element="true">'.
+            '<span class="whitespace element" data-type="WikiLingo\\Expression\\WhiteSpace" data-element="true"> </span>'.
+            '</div>'.
+            '<br class="hidden element" data-type="WikiLingo\\Expression\\Line" data-element="true">'.
+            '<span class="whitespace element" data-type="WikiLingo\\Expression\\WhiteSpace" data-element="true"> </span>'.
+            '<div aria-hidden="true" aria-expanded="false" style="display: none;" role="tabpanel" aria-labelledby="ui-id-2" class="tab element ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab2" data-type="WikiLingo\\Expression\\Plugin" data-element="true" data-plugin-type="tab" data-draggable="false" data-plugin-parameters="%7B%22title%22%3A%22For+a+laugh%22%2C%22text-align%22%3A%22center%22%7D" data-in-line="false">'.
+                '<br class="element" data-type="WikiLingo\\Expression\\Line" data-element="true">'.
+                '<span class="whitespace element" data-type="WikiLingo\\Expression\\WhiteSpace" data-element="true"> </span>'.
+                '<embed class="flash element" id="flash2" style="height:480px;width:640px;" src="img/emblem-multimedia.png" title="" data-type="WikiLingo\\Expression\\Plugin" data-element="true" data-plugin-type="flash" data-draggable="true" data-plugin-parameters="%7B%22movie%22%3A%22http%3A%5C%2F%5C%2Fwww.youtube.com%5C%2Fv%5C%2FOOr8ryJUOyQ%22%7D" data-in-line="true" contenteditable="false" height="480px" width="640px">'.
+                '<br class="element" data-type="WikiLingo\\Expression\\Line" data-element="true">'.
+                '<span class="whitespace element" data-type="WikiLingo\\Expression\\WhiteSpace" data-element="true"> </span>'.
+            '</div>'.
+            '<br class="hidden element" data-type="WikiLingo\\Expression\\Line" data-element="true">'.
+            '<span class="whitespace element" data-type="WikiLingo\\Expression\\WhiteSpace" data-element="true"> </span>'.
+            '<div aria-hidden="true" aria-expanded="false" style="display: none;" role="tabpanel" aria-labelledby="ui-id-3" class="tab element ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab3" data-type="WikiLingo\\Expression\\Plugin" data-element="true" data-plugin-type="tab" data-draggable="false" data-plugin-parameters="%7B%22title%22%3A%22Unsafe+code%22%7D" data-in-line="false">'.
+                '<br class="element" data-type="WikiLingo\\Expression\\Line" data-element="true">'.
+                '<span class="whitespace element" data-type="WikiLingo\\Expression\\WhiteSpace" data-element="true"> </span>'.
+                '<code class="element" data-type="WikiLingo\\Expression\\Tag" data-element="true">&lt;script&gt;</code>alert(\'t\');'.
+                '<code class="element" data-type="WikiLingo\\Expression\\Tag" data-element="true">&lt;/script&gt;</code>'.
+                '<br class="element" data-type="WikiLingo\\Expression\\Line" data-element="true">'.
+                '<span class="whitespace element" data-type="WikiLingo\\Expression\\WhiteSpace" data-element="true"> </span>'.
+                '<code class="element" data-type="WikiLingo\\Expression\\Tag" data-element="true">&lt;iframe&gt;</code>'.
+                '<code class="element" data-type="WikiLingo\\Expression\\Tag" data-element="true">&lt;/iframe&gt;</code>'.
+                '<br class="element" data-type="WikiLingo\\Expression\\Line" data-element="true">'.
+                '<span class="whitespace element" data-type="WikiLingo\\Expression\\WhiteSpace" data-element="true"> </span>'.
+            '</div>'.
+            '<br class="hidden element" data-type="WikiLingo\\Expression\\Line" data-element="true">';
+
+		$this->expected = "";
+	}
+}
+
