@@ -10,9 +10,20 @@ use WikiLingo\Renderer;
  */
 abstract class Base
 {
-    /* parser tracking */
+    /* type tracking */
+    /**
+     * @var array
+     */
     public $types = array();
+    /**
+     * @var array
+     */
     public $typesCount = array();
+
+    /**
+     * @var bool
+     */
+    public $skipExpressions = false;
 
     /**
      * @var
@@ -26,14 +37,8 @@ abstract class Base
     public $plugins = array();
     public $originalInput = '';
 
-    /* np tracking */
-    public $npStack = false; //There can only be 1 active np stack
-
-    /* pp tracking */
-    public $ppStack = false; //There can only be 1 active np stack
-
-	/* tc tracking */
-	public $tcStack = false; //There can only be 1 active tc stack
+    /* variable context stack */
+    public $variableContextStack = array();
 
     /* link tracking*/
     public $linkStack = false; //There can only be 1 active link stack
@@ -44,18 +49,20 @@ abstract class Base
     public $tableStack = array();
 
     /**
-     * @param String $class
-     * @param $type
-     * @return mixed
+     * @param WikiLingo\Expression\* &$type
+     * @return Number
      */
-    public function addType($class, &$type)
+    public function addType(&$type)
     {
+        $class = get_class($type);
         if (empty($this->types[$class])) {
             $this->types[$class] = array();
             $this->typesCount[$class] = -1;
         }
         $this->types[$class][] =& $type;
         $this->typesCount[$class]++;
+        $classNameShort = explode('\\', $class);
+        $type->type = array_pop($classNameShort);
         return $type->index = $this->typesCount[$class];
     }
 
@@ -74,17 +81,14 @@ abstract class Base
      * the parser is inside-out, this helps us reverse the execution from outside-in in some cases.
      *
      * @access  public
-     * @param   array  $skipTypes List of different ignorable stack types found on $this, like npStack, ppStack, or lineStack
+     * @param   array  $skipTypes
      * @return  string  true if content is current not parse-able
      */
     public function isContent($skipTypes = array())
     {
         //These types will be found in $this.  If any of these states are active, we should NOT parse wiki syntax
         $types = array(
-            'npStack' => true,
-            'ppStack' => true,
-            'linkStack' => true,
-	        'tcStack' => true
+            'linkStack' => true
         );
 
         foreach ($skipTypes as $skipType) {

@@ -1,6 +1,9 @@
 <?php
 namespace WikiLingo;
 
+
+use WikiLingo\Plugin\Parameter;
+
 /**
  * Class Events
  * @package WikiLingo
@@ -17,6 +20,7 @@ class Events
     public $WikiLingoEventExpressionTagAllowed = array();
     public $WikiLingoEventExpressionTagRender = array();
 
+    public $WikiLingoEventExpressionVariableContext = array();
     public $WikiLingoEventExpressionVariableLookup = array();
 
     public $WikiLingoEventExpressionWikiLinkRender = array();
@@ -27,6 +31,9 @@ class Events
 
     public $WikiLingoEventParsedRenderPermission = array();
     public $WikiLingoEventParsedRenderBlocked = array();
+
+    public $WikiLingoEventPreRender = array();
+    public $WikiLingoEventPostRender = array();
 
     /**
      * @param $event
@@ -115,6 +122,21 @@ class Events
     }
 
     /**
+     * @param $parser
+     * @return array
+     */
+    public function triggerVariableContext(&$parser)
+    {
+        $result = array();
+        foreach($this->WikiLingoEventExpressionVariableContext as &$event)
+        {
+            return $event->trigger($parser);
+        }
+
+        return $result;
+    }
+
+    /**
      * @param $key
      * @param Renderer\Element $element
      * @param Expression\Variable $variable
@@ -197,5 +219,33 @@ class Events
         {
             $event->trigger($parsed, $return);
         }
+    }
+
+	/**
+	 * @param Parsed $parsed
+	 * @return Parsed
+	 */
+	public function triggerPreRender(&$parsed)
+	{
+		foreach($this->WikiLingoEventPreRender as &$event)
+		{
+			$event->trigger($parsed);
+		}
+
+		return $parsed;
+	}
+
+    /**
+     * @param String $rendered
+     * @return String
+     */
+    public function triggerPostRender(&$rendered)
+    {
+        foreach($this->WikiLingoEventPostRender as &$event)
+        {
+            $event->trigger($rendered);
+        }
+
+        return $rendered;
     }
 }
