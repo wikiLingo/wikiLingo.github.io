@@ -1,4 +1,5 @@
-phpdoc run -d ../wikiLingo --ignore ../wikiLingo/vendor/*,../wikiLingo/Types/*,../wikiLingo/editor/*,../wikiLingo/img/*
-git rm documentation
+phpdoc run -d ../wikiLingo --ignore vendor/*,Types/*,editor/*,img/*
+git rm documentation -r
+rm documentation -rf
 mv output documentation
-git add documentation
+git add documentation -A
