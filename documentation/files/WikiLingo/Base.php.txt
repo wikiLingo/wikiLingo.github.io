@@ -12,7 +12,7 @@ abstract class Base
 {
     /* type tracking */
     /**
-     * @var array
+     * @var Expression\*[]
      */
     public $types = array();
     /**
@@ -26,7 +26,7 @@ abstract class Base
     public $skipExpressions = false;
 
     /**
-     * @var
+     * @var Events
      */
     public $events;
 
@@ -34,20 +34,36 @@ abstract class Base
     public $pluginStack = array();
     public $pluginStackCount = 0;
     public $pluginInstances = array();
+
+    /**
+     * @var Plugin\*[]
+     */
     public $plugins = array();
+
+    /**
+     * @var string
+     */
     public $originalInput = '';
 
-    /* variable context stack */
-    public $variableContextStack = array();
+    /**
+     * variable context stack
+     * @var Utilities\Stack
+     */
+    public $variableContextStack;
 
     /* link tracking*/
     public $linkStack = false; //There can only be 1 active link stack
 
-	public $blocks = array();
+    /**
+     * @var Expression\Block[]
+     */
+    public $blocks = array();
 	public $blocksLength = 0;
 
     public $tableStack = array();
 
+    public $allowsMutation = true;
+    public $verbose = false;
     /**
      * @param WikiLingo\Expression\* &$type
      * @return Number
@@ -67,12 +83,25 @@ abstract class Base
     }
 
     /**
+     * Clears all expression types
+     */
+    public function clearTypes()
+    {
+        $this->types = array();
+        $this->typesCount = array();
+        $this->pluginInstances = array();
+        $this->plugins = array();
+	    Expression\Plugin::$indexes = array();
+    }
+
+    /**
      * Stacks plugins for execution, since plugins can be called within each other.
      * @param String $name
      */
     public function stackPlugin($name)
     {
         $this->pluginStackCount++;
+        $name = trim($name);
 	    $this->pluginStack[] = substr($name, 1, -1);
     }
 
@@ -168,29 +197,19 @@ abstract class Base
             $syntax = '';
             for ($i = $firstLine; $i <= $lastLine; $i++) {
                 if ($i == $firstLine) { //first line
-                    $syntax .= substr($input[$i - 1], $firstColumn);
+                    $syntax .= substr($input[$i - 1], $firstColumn) . "\n";
 
                 } else if ($i == $lastLine) {//last line
                     $syntax .= substr($input[$i - 1], 0, $lastColumn);
 
                 } else {//lines in between
-                    $syntax .= $input[$i - 1];
+                    $syntax .= $input[$i - 1] . "\n";
                 }
             }
 
             return $syntax;
         }
     }
-
-	function element($type, $name)
-	{
-        return new Renderer\Element($type, $name);
-	}
-
-	function helper($name)
-	{
-        return new Renderer\Helper($name);
-	}
 
     function removeEOF( &$output )
     {

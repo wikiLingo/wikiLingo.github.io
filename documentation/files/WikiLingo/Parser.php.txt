@@ -12,25 +12,49 @@ use WikiLingo\Event;
 class Parser extends Definition
 {
 
-	public $scripts;
+	public $scripts = null;
 	private $parsing = false;
 	private $pcreRecursionLimit;
     public $wysiwyg = false;
+    public $renderer;
+    public $expressionInstantiator;
+    public $lexerErrors = array();
+    public $parserErrors = array();
 
     /**
      * @param Utilities\Scripts $scripts
+     * @param Renderer $renderer
+     * @param ExpressionInstantiator $expressionInstantiator;
      */
-    public function __construct(Utilities\Scripts &$scripts = null)
+    public function __construct(Utilities\Scripts &$scripts = null, $renderer = null, $expressionInstantiator = null)
 	{
-		if (empty($this->scripts)) {
-			if ($scripts != null ) {
+		if ($this->scripts === null) {
+			if ($scripts !== null ) {
 				$this->scripts =& $scripts;
 			} else {
 				$this->scripts = new Utilities\Scripts();
 			}
 		}
 
+        if ($this->renderer === null) {
+            if ($renderer !== null ) {
+                $this->renderer =& $renderer;
+            } else {
+                $this->renderer = new Renderer($this);
+
+            }
+        }
+
+        if ($this->expressionInstantiator === null) {
+            if ($expressionInstantiator !== null) {
+                $this->expressionInstantiator =& $expressionInstantiator;
+            } else {
+                $this->expressionInstantiator = new ExpressionInstantiator($this);
+            }
+        }
+
 		$this->emptyParserValue = new Parsed();
+		$this->variableContextStack = new Utilities\Stack();
 
 		if (empty($this->events)) {
             $this->events = new Events();
@@ -51,6 +75,12 @@ class Parser extends Definition
         $this->parsing = true;
         $this->preParse($input);
         $parsed = parent::parse($input);
+
+        //there was a failure
+        if ($parsed === true) {
+            return null;
+        }
+
         $this->parsing = false;
         $output = $this->postParse($parsed);
 
@@ -74,6 +104,9 @@ class Parser extends Definition
 
         $this->blocks = array();
         $this->blocksLength = 0;
+        $this->pluginStack = array();
+        $this->pluginStackCount = 0;
+
         $input = $input . "≤REAL_EOF≥"; //this is dynamically removed later
         $input = str_replace("\r", "", $input);
         //this is used for returning the syntax of a parsed
@@ -89,7 +122,7 @@ class Parser extends Definition
     public function postParse(Parsed &$parsed)
     {
 	    $parsed = $this->events->triggerPreRender($parsed);
-        $rendered = $parsed->render();
+        $rendered = $this->renderer->render($parsed);
         $rendered = $this->events->triggerPostRender($rendered);
         return $rendered;
     }
@@ -102,5 +135,21 @@ class Parser extends Definition
         parent::setInput($input);
 
         $this->begin('BOF');
+    }
+
+    public function lexerError($str = "", LexerError $hash = null)
+    {
+        $this->lexerErrors[] = $str;
+        if ($this->verbose) {
+            parent::lexerError($str, $hash);
+        }
+    }
+
+    public function parseError($str = "", ParserError $hash = null)
+    {
+        $this->parserErrors[] = $str;
+        if ($this->verbose) {
+            parent::parseError($str, $hash);
+        }
     }
 }

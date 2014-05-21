@@ -9,11 +9,11 @@ use WikiLingo\Parsed;
 
 class T extends Base
 {
-	public function __construct(WikiLingo\Parser &$parser = null)
+	public function __construct(&$parser)
 	{
 
 		if ($parser != null) {
-			$parser->types['WikiLingo\Expression\Header'] = array();
+			$parser->clearTypes();
 
             Type::Events($parser->events)
                 ->bind(new Event\Translate(function($value, $context) {
